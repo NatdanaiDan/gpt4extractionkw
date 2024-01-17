@@ -11,7 +11,6 @@ client = MongoClient(
 db = client["keytoad"]
 collection = db["test"]
 collection_cosmetic = db["cosmetic"]
-df = pd.read_csv("all_cosmetic_-_shuffled090.csv")
 g4f.debug.logging = True  # Enable debug logging
 g4f.debug.version_check = False  # Disable automatic version checking
 print(g4f.Provider.Bing.params)  # Print supported args for Bing
