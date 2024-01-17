@@ -2,6 +2,7 @@ import g4f
 from utl import MessageStorage
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import random
 
 print("Start")
 client = MongoClient(
@@ -11,9 +12,12 @@ client = MongoClient(
 db = client["keytoad"]
 collection = db["test"]
 collection_cosmetic = db["cosmetic"]
-g4f.debug.logging = True  # Enable debug logging
-g4f.debug.version_check = False  # Disable automatic version checking
-print(g4f.Provider.Bing.params)  # Print supported args for Bing
+providers = [
+    g4f.Provider.GeekGpt,
+    g4f.Provider.FreeGpt,
+    g4f.Provider.FakeGpt,
+    g4f.Provider.You,
+]
 iteration_counter = 0
 
 
@@ -24,7 +28,9 @@ def getdata():
         if not collection.find_one({"input": data[0]["output"]}):
             return data[0]["output"]
         else:
-            print("Duplicate")
+            # delete duplicate
+            collection_cosmetic.delete_one({"output": data[0]["output"]})
+            print("Delete duplicate")
 
 
 for i in range(1, 1001):
@@ -33,15 +39,20 @@ for i in range(1, 1001):
     dict_input["content"] = "input : " + item
     MessageStorage.append(dict_input)
     while True:
-        response = g4f.ChatCompletion.create(
-            model=g4f.models.gpt_35_long,
-            messages=MessageStorage,
-        )
-        if "<s>" in response and "</s>" in response:
-            break
-        else:
-            print("Error")
-            print(response)
+        try:
+            provider_random = random.choice(providers)
+            response = g4f.ChatCompletion.create(
+                model=g4f.models.gpt_35_long,
+                messages=MessageStorage,
+                provider=provider_random,
+            )
+            if "<s>" in response and "</s>" in response:
+                break
+        except Exception as e:
+            print(provider_random.__name__)
+            print(e)
+            print("Skip this")
+
     MessageStorage.pop()
     print("--------------------------------------------------")
     print(response)
