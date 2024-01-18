@@ -19,6 +19,7 @@ providers = [
     g4f.Provider.You,
 ]
 iteration_counter = 0
+index_provider = 0
 
 
 def getdata():
@@ -33,26 +34,39 @@ def getdata():
             print("Delete duplicate")
 
 
-for i in range(1, 1001):
+while True:
+    # count collection_cosmetic if empty then break
+    if collection_cosmetic.count_documents({}) == 0:
+        break
     item = getdata()
     dict_input = {"role": "user"}
     dict_input["content"] = "input : " + item
     MessageStorage.append(dict_input)
     while True:
         try:
-            provider_random = random.choice(providers)
+            provider = providers[index_provider]
             response = g4f.ChatCompletion.create(
                 model=g4f.models.gpt_35_long,
                 messages=MessageStorage,
-                provider=provider_random,
+                provider=provider,
             )
-            if "<s>" in response and "</s>" in response:
+
+            if (
+                "<s>" in response
+                and "</s>" in response
+                and "#### Extracted Keywords:" not in response
+            ):
                 break
+
         except Exception as e:
-            print(provider_random.__name__)
+            print(provider)
             print(e)
             print("Skip this")
 
+        provider = providers[index_provider]
+        index_provider += 1
+        if index_provider == 4:
+            index_provider = 0
     MessageStorage.pop()
     print("--------------------------------------------------")
     print(response)
