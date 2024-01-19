@@ -10,8 +10,8 @@ client = MongoClient(
     server_api=ServerApi("1"),
 )
 db = client["keytoad"]
-collection = db["test"]
-collection_cosmetic = db["cosmetic"]
+collection = db["funirture_kw"]
+collection_default = db["funirture"]
 providers = [
     g4f.Provider.GeekGpt,
     g4f.Provider.FreeGpt,
@@ -24,19 +24,19 @@ index_provider = 0
 
 def getdata():
     while True:
-        data = list(collection_cosmetic.aggregate([{"$sample": {"size": 1}}]))
+        data = list(collection_default.aggregate([{"$sample": {"size": 1}}]))
         # check "output" is already in collection or not
         if not collection.find_one({"input": data[0]["output"]}):
             return data[0]["output"]
         else:
             # delete duplicate
-            collection_cosmetic.delete_one({"output": data[0]["output"]})
+            collection_default.delete_one({"output": data[0]["output"]})
             print("Delete duplicate")
 
 
 while True:
-    # count collection_cosmetic if empty then break
-    if collection_cosmetic.count_documents({}) == 0:
+    # count collection_default if empty then break
+    if collection_default.count_documents({}) == 0:
         break
     item = getdata()
     dict_input = {"role": "user"}
