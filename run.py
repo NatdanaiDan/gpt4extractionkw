@@ -27,7 +27,7 @@ def getdata():
         data = list(collection_default.aggregate([{"$sample": {"size": 1}}]))
         # check "output" is already in collection or not
         if not collection.find_one({"input": data[0]["output"]}):
-            return data[0]["output"]
+            return data
         else:
             # delete duplicate
             collection_default.delete_one({"output": data[0]["output"]})
@@ -38,7 +38,8 @@ while True:
     # count collection_default if empty then break
     if collection_default.count_documents({}) == 0:
         break
-    item = getdata()
+    data = getdata()
+    item = data[0]["output"]
     dict_input = {"role": "user"}
     dict_input["content"] = "input : " + item
     MessageStorage.append(dict_input)
@@ -72,7 +73,14 @@ while True:
     print(response)
     print("--------------------------------------------------")
     # print(MessageStorage)
-    collection.insert_one({"input": item, "output": response})
+    related = (
+        data[0]["Column"]
+        .replace("[", "")
+        .replace("]", "")
+        .replace("'", "")
+        .replace(" ", "")
+    )
+    collection.insert_one({"input": item, "output": response, "related": related})
 
     # Increment the counter
     iteration_counter += 1
