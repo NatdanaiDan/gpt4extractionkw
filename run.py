@@ -55,7 +55,9 @@ while True:
             if (
                 "<s>" in response
                 and "</s>" in response
-                and "#### Extracted Keywords:" not in response
+                and "####" not in response
+                and "แปรงแต่งหน้า" not in response
+                and "คลีนเซอร์" not in response
             ):
                 break
 
@@ -73,13 +75,16 @@ while True:
     print(response)
     print("--------------------------------------------------")
     # print(MessageStorage)
-    related = (
-        data[0]["Column"]
-        .replace("[", "")
-        .replace("]", "")
-        .replace("'", "")
-        .replace(" ", "")
-    )
+    try:
+        related = (
+            data[0]["Column"]
+            .replace("[", "")
+            .replace("]", "")
+            .replace("'", "")
+            .replace(" ", "")
+        )
+    except:
+        related = ""
     collection.insert_one({"input": item, "output": response, "related": related})
 
     # Increment the counter
