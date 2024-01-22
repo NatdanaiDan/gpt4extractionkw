@@ -87,16 +87,19 @@ while True:
     print(response)
     print("--------------------------------------------------")
     # print(MessageStorage)
+    # try:
+    #     related = (
+    #         data[0]["related"]
+    #         .replace("[", "")
+    #         .replace("]", "")
+    #         .replace("'", "")
+    #         .replace(" ", "")
+    #     )
+    # except:
     try:
-        related = (
-            data[0]["related"]
-            .replace("[", "")
-            .replace("]", "")
-            .replace("'", "")
-            .replace(" ", "")
-        )
-    except:
         related = data[0]["related"]
+    except:
+        related = ""
 
     collection.insert_one({"input": item, "output": response, "related": related})
 
