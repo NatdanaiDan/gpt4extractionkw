@@ -68,6 +68,7 @@ while True:
                 and list_tosort[6] not in response
                 and list_tosort[7] not in response
                 and list_tosort[8] not in response
+                and "<s></s>" not in response
             ):
                 break
 
@@ -82,6 +83,7 @@ while True:
             index_provider = 0
     MessageStorage.pop()
     print("--------------------------------------------------")
+    print(item)
     print(response)
     print("--------------------------------------------------")
     # print(MessageStorage)
@@ -95,6 +97,7 @@ while True:
         )
     except:
         related = ""
+
     collection.insert_one({"input": item, "output": response, "related": related})
 
     # Increment the counter
