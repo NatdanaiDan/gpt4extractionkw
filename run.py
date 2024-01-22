@@ -1,5 +1,5 @@
 import g4f
-from utl import MessageStorage
+from utl import MessageStorage, textsort
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import random
@@ -20,6 +20,7 @@ providers = [
 ]
 iteration_counter = 0
 index_provider = 0
+list_tosort = textsort.split("|")
 
 
 def getdata():
@@ -51,13 +52,22 @@ while True:
                 messages=MessageStorage,
                 provider=provider,
             )
+            for text in textsort.split("|"):
+                if text in response:
+                    response = response.replace(text, "")
 
             if (
                 "<s>" in response
                 and "</s>" in response
-                and "####" not in response
-                and "แปรงแต่งหน้า" not in response
-                and "คลีนเซอร์" not in response
+                and list_tosort[0] not in response
+                and list_tosort[1] not in response
+                and list_tosort[2] not in response
+                and list_tosort[3] not in response
+                and list_tosort[4] not in response
+                and list_tosort[5] not in response
+                and list_tosort[6] not in response
+                and list_tosort[7] not in response
+                and list_tosort[8] not in response
             ):
                 break
 
@@ -77,7 +87,7 @@ while True:
     # print(MessageStorage)
     try:
         related = (
-            data[0]["Column"]
+            data[0]["related"]
             .replace("[", "")
             .replace("]", "")
             .replace("'", "")
