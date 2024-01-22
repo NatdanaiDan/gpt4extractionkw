@@ -96,7 +96,7 @@ while True:
             .replace(" ", "")
         )
     except:
-        related = ""
+        related = data[0]["related"]
 
     collection.insert_one({"input": item, "output": response, "related": related})
 
