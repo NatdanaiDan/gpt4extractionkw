@@ -6,7 +6,7 @@ import random
 
 print("Start")
 client = MongoClient(
-    "mongodb+srv://64015037:2YqYA4kjsTImOMmY@keytoad.nslb9f9.mongodb.net/?retryWrites=true&w=majority",
+    "mongodb+srv://XXXXX",
     server_api=ServerApi("1"),
 )
 db = client["keytoad"]
